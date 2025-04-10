@@ -1,3 +1,9 @@
+#include "TString.h"
+#include <iostream>
+using namespace std;
+
+
+
 void digi(TString name = "NewTPC")
 {
   auto run = KBRun::GetRun();
@@ -7,7 +13,7 @@ void digi(TString name = "NewTPC")
   auto parameter = new NewTPCSetupParameter();
   
   auto drift = new NewTPCDriftElectron();
-  drift -> SetPadPersistency(true);
+  //drift -> SetPadPersistency(true);
 
   auto electronics = new NewTPCElectronics(true);
 

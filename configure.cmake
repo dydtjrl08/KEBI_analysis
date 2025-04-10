@@ -9,10 +9,11 @@ set(BUILD_DOXYGEN_DOC OFF CACHE INTERNAL "")  # Build Doxygen API with HTML
 set(KEBI_PROJECT_LIST
   # ADD KEBI PROJECT DIRECOTRIES BELOW
   #===================================
-  LAMPS-HighEnergy
-  PrototypeTPC
+  #  LAMPS-HighEnergy
+  #PrototypeTPC
   at-tpc
   newTPC
+  # tpc_drum
   #===================================
   # ADD KEBI PROJECT DIRECOTRIES ABOVE
   CACHE INTERNAL ""

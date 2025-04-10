@@ -14,7 +14,7 @@ void reco(TString input = "ATTPC")
     psa -> SetPSA(new ATTPCPSAFastFit());
 
     run -> Add(psa);
-    run -> Add(new ATTPCHelixTrackFindingTask());
+//    run -> Add(new ATTPCHelixTrackFindingTask());
     // run -> Add(new ATTPCVertexFindingTask());
     // run -> Add(new ATTPCGenfitTask());
     

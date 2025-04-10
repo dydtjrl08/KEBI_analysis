@@ -1,11 +1,12 @@
 #include "ATTPCDriftElectron.hh"
-
+#include "TFile.h"
 #include "KBRun.hh"
 #include "KBMCStep.hh"
 #include "ATTPCSetupParameter.hh"
-
+#include "TClass.h"
 #include "TMath.h"
-
+#include <iostream>
+#include "KBMCTrack.hh"
 ClassImp(ATTPCDriftElectron)
 
 ATTPCDriftElectron::ATTPCDriftElectron()
@@ -15,11 +16,28 @@ ATTPCDriftElectron::ATTPCDriftElectron()
 
 bool ATTPCDriftElectron::Init()
 {
+
+  std::cout << "ATTPCDriftElectron inits ! " << std::endl;	
   KBRun *run = KBRun::GetRun();
   fTpc = (ATTPC *) run -> GetDetectorSystem() -> GetTpc();
   fMCTrackArray = (TClonesArray *) run -> GetBranch("MCTrack");
-  fNPlanes = fTpc -> GetNumPlanes();
 
+  TClass *cls = fMCTrackArray->GetClass();
+
+  std::cout << "The objects in the array are of type : " << cls -> GetName() << std::endl;  
+
+
+  std::cout << "The number of MCTrack is " << fMCTrackArray -> GetEntries() << std::endl;
+
+  for(int i = 0; i < fMCTrackArray->GetEntries(); ++i){
+		KBMCTrack *track1 = (KBMCTrack *)fMCTrackArray->At(i);
+		std::cout << "MCTrack index : " << i << " has vertex " << track1->GetNumVertices() << std::endl;
+
+  }
+ 
+  fNPlanes = fTpc -> GetNumPlanes();
+  
+  
   par = run -> GetParameterContainer();
 
   fGemVolt = par -> GetParDouble("GemVolt");
@@ -42,6 +60,9 @@ bool ATTPCDriftElectron::Init()
   fFastCalculate = par -> GetParBool("FastCalculate");
 
   GainDistribution();
+  std::cout << "fVelocityE is " << fVelocityE << std::endl;
+
+
 
   fPadArray = new TClonesArray("KBPad");
   run -> RegisterBranch("Pad", fPadArray, fPersistency);
@@ -60,13 +81,18 @@ void ATTPCDriftElectron::Exec(Option_t*)
   gRandom -> SetSeed(0);
   fPadArray -> Delete();
   fFPNPadArray -> Delete();
+  
+  
 
+//  std::cout << "ATTPCDriftElectron Exec ! " << std::endl;
+ // std::cout << "plane number is  " << fNPlanes << std::endl;
   for (Int_t iPlane = 0; iPlane < fNPlanes; iPlane++){
     fTpc -> GetPadPlane(iPlane) -> Clear();
   }
   
   Long64_t nMCtrack = fMCTrackArray -> GetEntries();
 
+ // std::cout << "MCtrack numbers are " << nMCtrack << std::endl;
   for (Long64_t itrack = 0; itrack < nMCtrack; ++itrack){
     KBMCTrack* track = (KBMCTrack*) fMCTrackArray -> At(itrack);
 
@@ -75,7 +101,7 @@ void ATTPCDriftElectron::Exec(Option_t*)
     Double_t KEnergy = (track -> GetKE())*1000000; //[ev]
 
     KBVector3 posMC(track -> GetVX(), track -> GetVY(), track -> GetVZ());
-    
+//    std::cout << "Track-> GetVY() " << track-> GetVY() << std::endl;
     posMC.SetReferenceAxis(fTpc -> GetEFieldAxis());
 
     auto plane = fTpc -> GetDriftPlane(posMC.GetXYZ());
@@ -85,17 +111,22 @@ void ATTPCDriftElectron::Exec(Option_t*)
     Int_t planeID = plane -> GetPlaneID();
     Double_t kPlane = plane -> GetPlaneK();
 
+
+    //std::cout << "At " << kPlane << "is kPlane by plane -> GetPlaneK() " << std::endl;
+
     Double_t lDrift = std::abs(kPlane - posMC.K());
 
     // Double_t tDrift = lDrift/fVelocityE;
     // Double_t sigmaLD = fLDiff * TMath::Sqrt(lDrift);
-    // Double_t sigmaTD = TransverseDiffusion(lDrift);
-
+    Double_t sigmaTD = TransverseDiffusion(lDrift);
+  //  std::cout << "At(GetGlobalAxis(kK) is " << posMC.K() << std::endl;
     // original diffusion (no corraction) ===================================
     Double_t tDrift = lDrift/fVelocityE;
     Double_t sigmaLD = fLDiff*TMath::Sqrt(lDrift);
-    Double_t sigmaTD = fTDiff*TMath::Sqrt(lDrift);
+    //Double_t sigmaTD = fTDiff*TMath::Sqrt(lDrift);
     Double_t sigmaGEMTD = 0.03245/TMath::Sqrt(10.);
+
+
 
     sigmaTD = sqrt(sigmaTD*sigmaTD + 3*pow(sigmaGEMTD, 2));
     // ======================================================================
@@ -137,6 +168,7 @@ void ATTPCDriftElectron::Exec(Option_t*)
       }
 
       for (Int_t iElCluster = 0; iElCluster < gain; iElCluster++) {
+            //  kb_info << "iElCluster is " << iElCluster << " posMC.I() " << posMC.I()  << endl;
 	      fTpc -> GetPadPlane(planeID) -> FillBufferIn(posMC.I()+di, posMC.J()+dj, tb, gainRatio, parentID);
       }
     }
@@ -218,6 +250,7 @@ Double_t ATTPCDriftElectron::WvalueDistribution(){
   constexpr double wref = 30.0;
   constexpr double fref = 0.174;
 
+  //kb_info << "WvalueDistribution starts " << endl;
   if (fWvalue <= 0 || fFanoFactor < 0) {
     return 0.;
   } 
@@ -243,11 +276,13 @@ Double_t ATTPCDriftElectron::WvalueDistribution(){
   }
 
   const double sqf = sqrt(fFanoFactor / fref);
-  return (fWvalue / wref) * sqf * e + fWvalue * (1. - sqf);
+  return (fWvalue / wref) * sqf * e + fWvalue * (1. - sqf); //test
+//  return (fWvalue / wref) * sqf * e + fWvalue * (1. - sqf);
 }
 
 Double_t ATTPCDriftElectron::TransverseDiffusion(Double_t length){
 
+//  kb_info << "TransverseDiffusion starts " << length << endl;
   Double_t CorrSigma1 = 0.0128*TMath::Sqrt(length) +1.61;
   Double_t CorrSigma2 = 0.0316*TMath::Sqrt(length) +1.28;
   Double_t DiffReduceRatio = fTDiff*fTDiff/fBAt0DiffCoef2/fBAt0DiffCoef2;

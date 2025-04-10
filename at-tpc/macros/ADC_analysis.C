@@ -9,11 +9,11 @@ void RectanglePadAnalysis(){
     int RowSelect = 5;
     
     auto tree = new TChain("event");
-    tree -> Add("$KEBIPATH/data/ATTPC.digi.2e5c877.root");
+    tree -> Add("$KEBIPATH/data/ATTPC.digi_PointZ.0f512ff.root");
     TClonesArray *padArray = nullptr;
     tree -> SetBranchAddress("Pad",&padArray);
 
-    TString DataPath = "$KEBIPATH/data/ATTPC.mc.root";
+    TString DataPath = "$KEBIPATH/data/ATTPC.mc_PointZ.root";
     auto tracktree = new TChain("event");
     tracktree -> Add(DataPath);
     TClonesArray *TrackArray = nullptr;
@@ -314,7 +314,7 @@ void HoneyCombPadAnalysis()
 void ADC_analysis(TString input = "ATTPC"){
 
     auto run = KBRun::GetRun();
-    run -> SetInputFile(input+".digi.2e5c877");
+    run -> SetInputFile(input+".digi_PointZ.0f512ff");
     // run -> AddFriend();
     run -> Init();
     auto par = run -> GetPar();

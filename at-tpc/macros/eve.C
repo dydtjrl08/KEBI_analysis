@@ -29,6 +29,15 @@ void eve(TString input = "ATTPC")
   run -> Init();
   run -> AddPar("input/par_at-tpc_eve.conf");
   run -> SetGeoTransparency(80);
-  run -> Print();
+//  run -> Print();
+  run -> ls();
+  run -> SetEveScale(10);
   run -> RunEve(fEventID);
+
+  //TCanvas *c1 = run -> GetCvsDetectorPlanes();
+
+  
+
+
+
 }

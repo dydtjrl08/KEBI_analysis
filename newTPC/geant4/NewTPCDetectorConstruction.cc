@@ -40,6 +40,11 @@ G4VPhysicalVolume* NewTPCDetectorConstruction::Construct()
   G4double tpcR1 = par -> GetParDouble("tpcR1");
   G4double tpcLength = par -> GetParDouble("tpcLength");
 
+
+  G4double tpcX = par -> GetParDouble("tpcX");
+  G4double tpcY = par -> GetParDouble("tpcY");
+  G4double tpcZ = par -> GetParDouble("tpcZ");
+
   G4double bfieldX = par -> GetParDouble("bfieldX");
   G4double bfieldY = par -> GetParDouble("bfieldY");
   G4double bfieldZ = par -> GetParDouble("bfieldZ");

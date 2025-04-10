@@ -12,19 +12,36 @@ void digi(TString name = "ATTPC")
   drift -> SetPadPersistency(true);
 
   auto electronics = new ATTPCElectronics();
-  auto subtractor = new ATTPCNoiseSubtractTask();
+  //auto subtractor = new ATTPCNoiseSubtractTask();
 
-  auto psa = new ATTPCPSATask();
-  psa->SetHitPersistency(true);
-  psa -> SetPSA(new ATTPCPSAFastFit());
+ // auto psa = new ATTPCPSATask();
+ // psa->SetHitPersistency(true);
+ // psa -> SetPSA(new ATTPCPSAFastFit());
+  
 
   run -> Add(parameter);
   run -> Add(drift);
   run -> Add(electronics);
-  run -> Add(subtractor);
-  run -> Add(psa);
+ // run -> Add(subtractor);
+ // run -> Add(psa);
   
   run -> Init();
+
+ // run -> Print();
+  
+ // auto par = run -> GetParameterContainer();
+
+
+ // TIter iterator(par);
+
+  
+ // TObject *obj;
+
+//  while((obj = (TObject*)iterator())) {
+//	obj -> Print();
+// }
+
+
   run -> Run();
- 
+  cout << run -> GetDataPath() << endl;
 }

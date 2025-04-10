@@ -15,16 +15,21 @@ bool NewTPC::Init()
   fEFieldAxis = fPar -> GetParAxis("tpcEFieldAxis");
 
   if (BuildGeometry() == false)
-    return false;
-
+  {        std::cout << "BuildGeometry is false!" << std::endl;
+      
+	  return false;
+  }
   if (BuildDetectorPlane() == false)
     return false;
 
+  std::cout << "BuildGeometry is true!" << std::endl;
   return true;
 }
 
 KBVector3::Axis NewTPC::GetEFieldAxis()
 {
+
+  std::cout << "NewTPC GetEFieldAxis executes!" << std::endl;
   return fEFieldAxis;
 }
 
@@ -44,6 +49,7 @@ bool NewTPC::BuildGeometry()
 {
 
 
+  std::cout << "NewTPC BuildGeometry executes!" << std::endl;
   if (fGeoManager == nullptr) {
     new TGeoManager();
     fGeoManager = gGeoManager;

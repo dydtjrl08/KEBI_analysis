@@ -100,7 +100,7 @@ void NewTPCRandomPrimaryGenerate::HoyleState(G4Event* event)
 
   Int_t eventID = event -> GetEventID();
 
-  if(eventID%2 == 0){
+//  if(eventID%2 == 0){
     PositionX = 0.;
     PositionY = 0.;
     PositionZ = 499.;
@@ -115,9 +115,9 @@ void NewTPCRandomPrimaryGenerate::HoyleState(G4Event* event)
     fParticleGun -> SetParticlePosition(G4ThreeVector(PositionX *mm, PositionY *mm, PositionZ *mm));
     fParticleGun -> GeneratePrimaryVertex(event);
 
-    InteractionEnergy = fRandom->Uniform(minimumInteractionEnergy, ParticleEnergy);
-  }
-  if(eventID%2 == 1){
+//   InteractionEnergy = fRandom->Uniform(minimumInteractionEnergy, ParticleEnergy);
+}
+/*  if(eventID%2 == 1){
     TVector3 Alpha1, Alpha2, Alpha3;
     TLorentzVector Alpha1_4Vec, Alpha2_4Vec, Alpha3_4Vec;
     Double_t KEnergy1, KEnergy2, KEnergy3;
@@ -200,8 +200,8 @@ void NewTPCRandomPrimaryGenerate::HoyleState(G4Event* event)
     fParticleGun -> SetParticlePosition(G4ThreeVector(PositionX *mm, PositionY *mm, PositionZ *mm));
     fParticleGun -> GeneratePrimaryVertex(event);
   }
-}
-  
+}*/
+ 
 void NewTPCRandomPrimaryGenerate::Particle(){
   // G4double tpcR0 = fPar -> GetParDouble("tpcR0");
   // G4double tpcR1 = fPar -> GetParDouble("tpcR1");

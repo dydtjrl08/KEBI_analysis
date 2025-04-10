@@ -13,7 +13,7 @@
 #include "KBTrackingAction.hh"
 #include "KBSteppingAction.hh"
 
-#include "NewTPC.hh"
+//#include "NewTPC.hh"
 #include "NewTPCDetectorConstruction.hh"
 #include "NewTPCPhysicsList.hh"
 #include "NewTPCRandomPrimaryGenerate.hh"

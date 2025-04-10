@@ -111,7 +111,7 @@ void TrackDataTree(){
 }
 void Particle_tracking(TString input = "ATTPC"){
     auto run = KBRun::GetRun();
-    run -> SetInputFile(input+".digi.2e5c877");
+    run -> SetInputFile(input+".digi.0f512ff");
     run -> Init();
     auto par = run -> GetPar();
 
@@ -121,7 +121,7 @@ void Particle_tracking(TString input = "ATTPC"){
     Bfield = par -> GetParDouble("bfieldZ");
 
     if(PadPlaneType == "RectanglePad"){
-        ATTPCRectnglePad *PadPlane = new ATTPCRectnglePad();
+        ATTPCRectanglePad *PadPlane = new ATTPCRectanglePad();
         PadHeight = PadPlane -> GetPadHeight();
         PadWidth = PadPlane -> GetPadWidth();
         PadGap = PadPlane -> GetPadGap();

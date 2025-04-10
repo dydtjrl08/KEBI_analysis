@@ -1,5 +1,5 @@
 #include "KBRun.hh"
-
+#include <vector>
 #include "TEnv.h"
 #include "TSystem.h"
 #include "TStyle.h"
@@ -395,6 +395,10 @@ void KBRun::SetInputFile(TString fileName, TString treeName) {
   fInputFileName = KBRun::ConfigureDataPath(fileName,true,fDataPath);
   fInputVersion = GetFileVersion(fInputFileName);
   fInputTreeName = treeName;
+
+  kb_info << "InputFilename is " << fInputFileName << endl;
+  kb_info << "InputTreeName is " << fInputTreeName << endl;
+ 
 }
 
 void KBRun::AddInputFile(TString fileName, TString treeName) {
@@ -413,7 +417,9 @@ TTree *KBRun::GetInputTree() const { return (TTree *) fInputTree; }
 TChain *KBRun::GetInputChain()  const { return fInputTree; }
 TChain *KBRun::GetFriendChain(Int_t iFriend)  const { return ((TChain *) fFriendTrees -> At(iFriend)); }
 
-void KBRun::SetOutputFile(TString name) { fOutputFileName = name; }
+void KBRun::SetOutputFile(TString name) { fOutputFileName = name;
+					kb_info << "OutPutFile is " << fOutputFileName << endl;
+}
 TFile *KBRun::GetOutputFile() { return fOutputFile; }
 TTree *KBRun::GetOutputTree() { return fOutputTree; }
 void KBRun::SetTag(TString tag) { fTag = tag; }
@@ -441,6 +447,8 @@ bool KBRun::Init()
   Int_t idxInput = 0;
   if (fInputFileName.IsNull() && fInputFileNameArray.size() != 0) {
     fInputFileName = fInputFileNameArray[0];
+
+    kb_info << "Input File name is " << fInputFileName << endl;
     idxInput = 1;
   }
 
@@ -458,6 +466,7 @@ bool KBRun::Init()
     fInputTree = new TChain(fInputTreeName);
     fInputTree -> AddFile(fInputFileName);
     kb_info << "Input file : " << fInputFileName << endl;
+    kb_info << "Input file " << "gimozzi" << endl;
 
     Int_t nInputs = fInputFileNameArray.size();
     for (Int_t iInput = idxInput; iInput < nInputs; iInput++) {
@@ -471,6 +480,7 @@ bool KBRun::Init()
       friendTree -> AddFile(fFriendFileNameArray[iFriend]);
       fInputTree -> AddFriend(friendTree);
       fFriendTrees -> Add(friendTree);
+      kb_info << "Input friend file Added! " << endl;
     }
 
     fNumEntries = fInputTree -> GetEntries();
@@ -478,6 +488,7 @@ bool KBRun::Init()
 
     TObjArray *branchArray = fInputTree -> GetListOfBranches();
     Int_t numBranches = branchArray -> GetEntries();
+    
     vector<TString> arrMCStepIDs;
     Int_t numMCStepIDs = 0;
     for (Int_t iBranch = 0; iBranch < numBranches; iBranch++) {
@@ -639,9 +650,9 @@ bool KBRun::Init()
       kb_warning << "output:" << fOutputFileName << " input:" << fInputFileName.IsNull() << endl;
     }
   }
-
+  kb_info << "KBRun.cc Line 653, Tasks initialization will do... ATTPCSetupParameter,ATTPCDriftELectron, and Resiter Branch(PAD,FPNPad) and ATTPCElectronics, and using pulse pulserForATTPC.dat" <<endl;
   fInitialized = InitTasks();
-
+  
   if (fInitialized) {
     kb_info << fNumEntries << " input entries" << endl;
     kb_info << "KBRun initialized!" << endl;
@@ -819,7 +830,7 @@ bool KBRun::Event(Long64_t eventID)
 
   kb_info << "Execute Event " << fCurrentEventID << endl;
   ExecuteTask("");
-
+  kb_info << "Event executed " << endl;
   return true;
 }
 
@@ -1057,18 +1068,25 @@ void KBRun::DrawEve3D()
     auto numEveEvents = fEveEventManagerArray -> GetEntries();
     for (auto iEveEvent=0; iEveEvent<numEveEvents; ++iEveEvent) {
       ((TEveEventManager *) fEveEventManagerArray -> At(iEveEvent)) -> RemoveElements();
+      kb_info << "DrawEve3D Remove... " << endl;
     }
   }
 
-  if (gEve == nullptr)
+  if (gEve == nullptr){
     ConfigureEventDisplay();
-
+    kb_info << "ConfigureEventDisplay called . " <<endl;	
+  }
   bool removePointTrack = (fPar->CheckPar("eveRemovePointTrack")) ? (fPar->GetParBool("eveRemovePointTrack")) : false;
 
   for (Int_t iBranch = 0; iBranch < fNumSelectedBranches; ++iBranch)
   {
     TString branchName = fSelBranchNames.at(iBranch);
+    kb_info << "branchName is " << branchName << endl;
     auto branch = (TObjArray *) fBranchPtrMap[branchName];
+
+    kb_info << "fBranchPtrMap type is " << branch->GetEntries()<< endl;
+    
+    
     if (branch == nullptr) {
       kb_error << "No eve-branch name " << branchName << endl;
       continue;
@@ -1077,8 +1095,14 @@ void KBRun::DrawEve3D()
       continue;
 
     auto objSample = branch -> At(0);
-    if (objSample -> InheritsFrom("KBContainer") == false)
+
+    kb_info << "branch entry type is " << objSample -> ClassName() << endl;
+    if (objSample -> InheritsFrom("KBContainer") == false){
+
+      kb_info << objSample->ClassName() << "is not inherited from KBContainer. " << endl;
       continue;
+    }
+
 
     bool isTracklet = (objSample -> InheritsFrom("KBTracklet")) ? true : false;
     bool isHit = (objSample -> InheritsFrom("KBHit")) ? true : false;
@@ -1088,8 +1112,11 @@ void KBRun::DrawEve3D()
     if (fSelBranchNames.size() == 0 || !eveObj -> DrawByDefault())
       continue;
 
+    kb_info << objSample->ClassName() << "is isKBTracklet : " << isTracklet << endl;
+    kb_info << objSample->ClassName() << "is isKBHit : " << isHit << endl;
     auto eveEvent = (TEveEventManager *) fEveEventManagerArray -> FindObject(branchName);
     if (eveEvent==nullptr) {
+      kb_info << "eveEvent will be added " << branchName << endl;
       eveEvent = new TEveEventManager(branchName);
       fEveEventManagerArray -> Add(eveEvent);
       gEve -> AddEvent(eveEvent);
@@ -1117,6 +1144,7 @@ void KBRun::DrawEve3D()
         eveEvent -> AddElement(eveLine);
         numSelected++;
       }
+     kb_info << "numSelected is Track Number ..." << numSelected << endl; 
     }
     else if (eveObj -> IsEveSet())
     {
@@ -1139,6 +1167,7 @@ void KBRun::DrawEve3D()
       }
       SetEveMarkerAtt(eveSet, branchName);
       eveEvent -> AddElement(eveSet);
+      kb_info << "numSelected is KBHit Number ..." << numSelected << endl;
     }
     else {
       for (Int_t iObject = 0; iObject < nObjects; ++iObject) {
@@ -1217,25 +1246,33 @@ void KBRun::DrawDetectorPlanes()
   {
     auto plane = fDetectorSystem -> GetDetectorPlane(iPlane);
     kb_info << "Drawing " << plane -> GetName() << endl;
+    kb_info << "plane class type is " << plane -> ClassName() << endl;
 
     auto histPlane = plane -> GetHist();
     histPlane -> SetMinimum(ppHistMin);
     histPlane -> Reset();
+    kb_info << "histPlane type is " << histPlane -> ClassName() << endl;
 
     auto cvs = (TCanvas *) fCvsDetectorPlaneArray -> At(iPlane);
 
     if (plane -> InheritsFrom("KBPadPlane"))
     {
+      kb_info << "plane is herited from KBPadPlane " << endl;		    
       auto padplane = (KBPadPlane *) plane;
 
       bool exist_hit = false;
       bool exist_pad = false;
 
-      if (hitArray != nullptr)
+      if (hitArray != nullptr){
         exist_hit = true;
+	kb_info << "hit already exists." << endl;
+      }
       else {
-        for (Int_t iBranch = 0; iBranch < fNumSelectedBranches; ++iBranch)
+        kb_info << "hit does not exist, so we create this number of " << fNumSelectedBranches << endl;
+	for (Int_t iBranch = 0; iBranch < fNumSelectedBranches; ++iBranch)
         {
+
+		
           TString branchName = fSelBranchNames.at(iBranch);
           if (branchName.Index("Hit")==0) {
             kb_info << branchName << " is to be filled to pad plane" << endl;
@@ -1250,7 +1287,8 @@ void KBRun::DrawDetectorPlanes()
         exist_pad = true;
 
       if (!exist_hit && !exist_pad) {
-        cvs -> cd();
+        kb_info << "plane's hist will be drawing ... " << endl;
+	cvs -> cd();
         histPlane -> Draw();
         plane -> DrawFrame();
         continue;
@@ -1275,7 +1313,7 @@ void KBRun::DrawDetectorPlanes()
         padplane -> FillDataToHist("out");
       }
     }
-
+    kb_info << "Canvas is ready... " << endl;
     cvs -> Clear();
     cvs -> cd();
 
@@ -1318,7 +1356,7 @@ void KBRun::DrawDetectorPlanes()
           auto tracklet = (KBTracklet *) branch -> At(iTracklet);
           if (!SelectTrack(tracklet))
             continue;
-
+          kb_info << "tracklet will be draw ... the order of track is " << iTracklet << endl;
           tracklet -> TrajectoryOnPlane(axis1, axis2) -> Draw("samel");
         }
       }
@@ -1327,6 +1365,7 @@ void KBRun::DrawDetectorPlanes()
 
   // @todo palette is changed when drawing top node because of TGeoMan(?)
   gStyle -> SetPalette(kBird);
+  kb_info << "Making histogram finished " << endl;
 }
 
 void KBRun::SetEveLineAtt(TEveElement *el, TString branchName)
@@ -1417,6 +1456,8 @@ void KBRun::RunEve(Long64_t eveEventID, TString option)
 
   Bool_t drawEve3D = (fEveOption.Index("e")>=0) ? true : false;
   Bool_t drawDetectorPlanes = (fEveOption.Index("p")>=0) ? true : false;
+  kb_info << "drawEve3D : " << drawEve3D << endl;
+  kb_info << "drawDetectorPlanes : " << drawDetectorPlanes << endl;
 
   if (eveEventID>=0 && fCurrentEventID!=eveEventID)
     Event(eveEventID);
@@ -1432,12 +1473,21 @@ void KBRun::RunEve(Long64_t eveEventID, TString option)
   fSelHitPntIDs = fPar -> GetParVInt("eveSelectHitParentIDs");
   fIgnHitPntIDs = fPar -> GetParVInt("eveIgnoreHitParentIDs");
   fSelBranchNames = fPar -> GetParVString("eveSelectBranches");
+ 
+  for(size_t i = 0; i < fSelTrkIDs.size(); ++i){
+	kb_info << fSelTrkIDs[i] << endl;
 
+  }
+
+  
   fNumSelectedBranches = fSelBranchNames.size();
   if (fNumSelectedBranches==0) {
     fNumSelectedBranches = fNumBranches;
+    kb_info << "fNumSelectedBranches are " << fNumBranches << endl;
     for (auto iBranch=0; iBranch<fNumSelectedBranches; ++iBranch)
-      fSelBranchNames.push_back(fBranchNames[iBranch]);
+    {    fSelBranchNames.push_back(fBranchNames[iBranch]);
+      kb_info << "fBranchName is " << fBranchNames[iBranch] << endl;
+  }
   }
   else {
     vector<TString> tempBranchNames;

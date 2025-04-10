@@ -42,9 +42,9 @@ class ATTPCRectanglePad : public KBPadPlane
     std::vector<Int_t> PadNeighborIndex(Int_t layer, Int_t Row, Int_t PadID);
   
     Int_t fNumSections = 1;
-    Int_t RowNum = 32;
-    Int_t ColumnNum = 8;
-    Double_t fPadWidth = 1.9; // [mm]       // 2.625 old pad type 1.9
+    Int_t RowNum = 64;
+    Int_t ColumnNum = 12;
+    Double_t fPadWidth = 0.9; // [mm]       // 2.625 old pad type 1.9
     Double_t fPadHeight = 11.9; // [mm]     // 12    old pad type 11.9
     Double_t fPadGap = 0.1; // [mm]         // 0.5   old pad type 0.1
     Double_t fBasePadPos = 100.; // [mm]

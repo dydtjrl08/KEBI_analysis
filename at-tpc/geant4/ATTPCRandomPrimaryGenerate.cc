@@ -76,6 +76,9 @@ void ATTPCRandomPrimaryGenerate::GeneratePrimaries(G4Event* anEvent)
   HoyleState(anEvent);
 
   fNumberOfPrimary = anEvent -> GetNumberOfPrimaryVertex();
+
+
+  g4_info << "Number of Primary is " << fNumberOfPrimary << endl;
 }
 
 void ATTPCRandomPrimaryGenerate::ExternalTriggerPMT(G4Event* event)
@@ -247,7 +250,7 @@ void ATTPCRandomPrimaryGenerate::HoyleState(G4Event* event)
 
   Int_t eventID = event -> GetEventID();
 
-  if(eventID%2 == 0){
+//  if(eventID%2 == 0){
     // direct mode.
     // PositionX = 100.;
     // PositionY = 100.;
@@ -257,9 +260,9 @@ void ATTPCRandomPrimaryGenerate::HoyleState(G4Event* event)
     // DirectionZ = -1.;
 
     // dipole mode.
-    PositionX = 20.;
-    PositionY = -10.;
-    PositionZ = 78.;
+    PositionX = 30.;
+    PositionY = 0.;
+    PositionZ = 30.;
     DirectionX = 0.;
     DirectionY = 1.;
     DirectionZ = 0.;
@@ -271,9 +274,9 @@ void ATTPCRandomPrimaryGenerate::HoyleState(G4Event* event)
     fParticleGun -> GeneratePrimaryVertex(event);
 
     InteractionEnergy = fRandom->Uniform(minimumInteractionEnergy, ParticleEnergy);
-  }
+// }
 
-  if(eventID%2 == 1){
+/*  if(eventID%2 == 1){
     TVector3 Alpha1, Alpha2, Alpha3;
     TLorentzVector Alpha1_4Vec, Alpha2_4Vec, Alpha3_4Vec;
     Double_t KEnergy1, KEnergy2, KEnergy3;
@@ -359,6 +362,6 @@ void ATTPCRandomPrimaryGenerate::HoyleState(G4Event* event)
     fParticleGun -> SetParticleEnergy(KEnergy3 *MeV);
     fParticleGun -> SetParticlePosition(G4ThreeVector(PositionX *mm, PositionY *mm, PositionZ *mm));
     fParticleGun -> GeneratePrimaryVertex(event);
-  }
+  }*/
 }
   

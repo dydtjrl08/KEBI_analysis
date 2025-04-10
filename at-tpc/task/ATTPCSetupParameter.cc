@@ -28,7 +28,7 @@ bool ATTPCSetupParameter::Init()
   par -> SetPar("GasWvalue", fGasWvalue);
   par -> SetPar("FanoFactor",fFanoFactor);
   par -> SetPar("ElectronNumRef", fElectronNumRef);
-  
+  std::cout << "ATTPCSetupParameter inits . " << std::endl;  
   return true;
 }
 

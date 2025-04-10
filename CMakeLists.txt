@@ -3,9 +3,9 @@ cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
 project(KEBI)
 
 #---Configuration
-set(ACTIVATE_EVE      OFF CACHE INTERNAL "") # Activate Root Eve package
-set(CREATE_GIT_LOG    OFF CACHE INTERNAL "") # Create Git log
-set(BUILD_GEANT4_SIM  OFF CACHE INTERNAL "") # Build Geant4 simulation
+set(ACTIVATE_EVE      ON  CACHE INTERNAL "") # Activate Root Eve package
+set(CREATE_GIT_LOG    ON  CACHE INTERNAL "") # Create Git log
+set(BUILD_GEANT4_SIM  ON  CACHE INTERNAL "") # Build Geant4 simulation
 set(BUILD_DOXYGEN_DOC OFF CACHE INTERNAL "") # Build Doxygen documentation with HTML
 set(KEBI_PROJECT_LIST     CACHE INTERNAL "") # List of KEBI projects to build
 
@@ -77,21 +77,21 @@ include(${ROOT_USE_FILE})
 
 set(TOOLS_LIBRARIES_LIST ${ROOT_LIBRARIES} CACHE INTERNAL "")
 
-find_package(Boost   REQUIRED)
-Set(LD_LIBRARY_PATH ${LD_LIBRARY_PATH} ${Boost_LIBRARY_DIR})
+#find_package(Boost   REQUIRED)
+#Set(LD_LIBRARY_PATH ${LD_LIBRARY_PATH} ${Boost_LIBRARY_DIR})
 
-find_package(Eigen3  REQUIRED)
-find_package(Rave    REQUIRED)
-find_package(GENFIT2 REQUIRED)
+#find_package(Eigen3  REQUIRED)
+#find_package(Rave    REQUIRED)
+#find_package(GENFIT2 REQUIRED)
 
-include_directories(${EIGEN3_INCLUDE_DIR})
-include_directories(${GENFIT2_INCLUDE_DIR})
+#include_directories(${EIGEN3_INCLUDE_DIR})
+#include_directories(${GENFIT2_INCLUDE_DIR})
 
-set(LINK_DIRECTORIES
-  ${ROOT_LIBRARY_DIR}
-  ${RAVE_LIBRARY_DIR}
-  ${GENFIT2_LIBRARY_DIR}
-)
+#set(LINK_DIRECTORIES
+#  ${ROOT_LIBRARY_DIR}
+  #  ${RAVE_LIBRARY_DIR}
+  # ${GENFIT2_LIBRARY_DIR}
+  #)
 
 link_directories(${LINK_DIRECTORIES})
 

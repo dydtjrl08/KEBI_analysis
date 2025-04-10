@@ -1,4 +1,4 @@
-#G4VisFile    s  $KEBIPATH/newTPC/macros/input/vis.mac
+G4VisFile    s  $KEBIPATH/newTPC/macros/input/vis.mac
 G4InputMode i 0 #0: single, 1: text file
 G4InputFile   s  $KEBIPATH/newTPC/macros/generate/CosmicMuon.gen
 G4OutputFile  s  $KEBIPATH/data/NewTPC.mc.root

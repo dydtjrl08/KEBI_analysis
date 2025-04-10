@@ -40,11 +40,11 @@ class NewTPCRectnglePad : public KBPadPlane
     Int_t FindSection(Double_t i, Double_t j);
   
     Int_t fNumSections = 1;
-    Int_t RowNum = 32;
-    Int_t ColumnNum = 8;
-    Double_t fPadWidth = 2.625; // [mm]
-    Double_t fPadHeight = 12; // [mm]
-    Double_t fPadGap = 0.5; // [mm]
+    Int_t RowNum = 12;
+    Int_t ColumnNum = 27;
+    Double_t fPadWidth = 0.9; // [mm]
+    Double_t fPadHeight = 11.9; // [mm]
+    Double_t fPadGap = 0.1; // [mm]
     Double_t fBasePadPos = 100.; // [mm]
   
     std::vector<Int_t> fNRowsInLayer[1];

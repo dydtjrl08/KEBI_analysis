@@ -21,7 +21,10 @@ ATTPCDecoderTask::ATTPCDecoderTask()
 } 
 
 bool ATTPCDecoderTask::Init()
-{
+{   
+
+    std::cout << "ATTPCDecoderTask inits. " << std::endl;
+
     KBRun *run = KBRun::GetRun();
     ATTPC *tpc = (ATTPC *) run -> GetDetector(0);
     fPadPlane = tpc -> GetPadPlane();

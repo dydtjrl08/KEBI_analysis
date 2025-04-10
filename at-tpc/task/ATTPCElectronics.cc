@@ -1,6 +1,7 @@
 #include "KBRun.hh"
 #include "ATTPCElectronics.hh"
 
+#include <iostream>
 using namespace std;
 
 ClassImp(ATTPCElectronics)
@@ -12,6 +13,8 @@ ATTPCElectronics::ATTPCElectronics(Bool_t usePointChargeMC)
 
 bool ATTPCElectronics::Init()
 {
+
+  std::cout << "ATTPCElectronics inits. " << std::endl;	
   KBRun *run = KBRun::GetRun();
 
   KBParameterContainer *par = run -> GetParameterContainer();
@@ -49,10 +52,10 @@ bool ATTPCElectronics::Init()
 void ATTPCElectronics::Exec(Option_t*)
 {
   gRandom -> SetSeed(0);
-
+  std::cout << "ATTPCElectronics Exec! " << std::endl;
   if(fNoiseOn == true){
     Int_t nFPNPads = fFPNPadArray -> GetEntries();
-
+    std::cout << "ATTPCElectronics Exec and fNoise On! "<< std::endl;
     for(int iPad = 0; iPad < nFPNPads; iPad++){
       KBPad *pad = (KBPad *) fFPNPadArray -> At(iPad);
       Double_t out[512] = {0};
@@ -72,7 +75,7 @@ void ATTPCElectronics::Exec(Option_t*)
   for (Int_t iPad = 0; iPad < nPads; iPad++) {
     KBPad *pad = (KBPad *) fPadArray -> At(iPad);
     Double_t out[512] = {0};
-
+    //std::cout << "nPads are " << nPads << std::endl;
     if (fUsePointChargeMC)
     {
       auto tbs = pad -> GetMCTbArray();

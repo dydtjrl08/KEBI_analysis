@@ -79,6 +79,7 @@ bool KBTask::EndOfRunTasks()
 
   while ( (task = dynamic_cast<KBTask*>(iter())) ) {
     kb_info << "EndOfRun " << task -> GetName() << "." << endl;
+    kb_info << "This Run Rank is " << task -> GetRank() << "." << endl;
     if (task -> EndOfRun() == false) {
       kb_warning << "EndOfRun failed!" << endl;
       return false;
