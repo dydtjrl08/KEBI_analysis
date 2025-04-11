@@ -262,7 +262,7 @@ void ATTPCRandomPrimaryGenerate::HoyleState(G4Event* event)
     // dipole mode.
     PositionX = 30.;
     PositionY = 0.;
-    PositionZ = 30.;
+    PositionZ = 89.;
     DirectionX = 0.;
     DirectionY = 1.;
     DirectionZ = 0.;
